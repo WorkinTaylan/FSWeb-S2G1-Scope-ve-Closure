@@ -13,8 +13,7 @@
  * 
  * Aşağıdaki kodlar bu görevin nasıl yapılacağına örnek olacaktır
  * Bu fonskiyon 'asas' dönmeli(return)
-*/
-
+*/console.clear();
 function ilkiniDon(stringArray, callback) {
   return callback(stringArray[0])
 }
@@ -30,10 +29,14 @@ console.log('örnek görev:', ilkiniDon(['as','sa'],function(metin){return metin
   Aşağıdaki skor1 ve skor2 kodlarını inceleyiniz ve aşağıdaki soruları altına not alarak cevaplayın
   
   1. skor1 ve skor2 arasındaki fark nedir?
-  
+  let skor = 0; değişkeni skor1 kodlarında local durumdayken(fonksiyon içinde) skor2 kodlarında globalde(tüm sayfaya hitap eden) tanımlanmıştır (global scope). skor1'de fonksiyon içine dışardan erişilmez.
+  Skor1 kodlarında 'skor' değişkenini aynı isimle, fonksiyonun dışında başka bir görev için tekrar başka bir değişene atayabilirim. Fakat, fonksiyon içine dışardan erişim olmaz. 
+  Skor2 kodlarındaki skor değişkenini fonksiyon içinde ve tüm genel sayfada kullanabilirim. Fonksiyon içi dışardan değişken kullanabilir.  
   2. Hangisi bir closure kullanmaktadır? Nasıl tarif edebilirsin? (yarınki derste öğreneceksin :) )
-  
+  skor2 closure kullanmıştır. Closure globalde tanımlanan değişkeni localde yani fonksiyon içinde kullanmamızı-çalıştırmamızı sağlar.
   3. Hangi durumda skor1 tercih edilebilir? Hangi durumda skor2 daha mantıklıdır?
+  Globalde tanımlanan değişken ramde fazla yer kapsayabilir. Bu da browser performansını etkileyebilir. 
+  Skor1 kodlarında fonksiyon içi çalıştıktan sonra fonksiyon içi bellekte yer kaplamaz.
 */
 
 // skor1 kodları
@@ -61,13 +64,14 @@ Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
   Ön Bilgi: Bir çeyrekte takımlar ortalama 10 ile 25 sayı üretebiliyor
   Örnek: takimSkoru çağrıldığında 10-25 arasında bir skor dönmeli
   
-Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
+Not: Bu fonksiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
 */
 
-function takimSkoru(/*Kodunuzu buraya yazınız*/){
-    /*Kodunuzu buraya yazınız*/
+function takimSkoru(){ 
+  let sonuc = Math.floor(Math.random()*15) + 10;
+  return sonuc
 }
-
+console.log(takimSkoru())
 
 
 
@@ -86,11 +90,19 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
+
+function macSonucu(scoreboard, ceyrek){
+  let takimlar = {
+    EvSahibi: 0,
+    KonukTakim:0,
+  }
+  for (let i=0; i<ceyrek; i++) {
+  takimlar.EvSahibi+=scoreboard();
+  takimlar.KonukTakim+=scoreboard();
+ }
+ return takimlar;
 }
-
-
+console.log(macSonucu(takimSkoru,4));
 
 
 
@@ -109,11 +121,15 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
   */
 
 
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
-
+function periyotSkoru(scoreboard) {
+  let obj = {
+    EvSahibi: scoreboard(),
+    KonukTakim: scoreboard(),
+  }
+return obj;
 }
-
+console.clear()
+console.log(periyotSkoru(takimSkoru))
 
 /* Zorlayıcı Görev 5: skorTabelasi() 
 Aşağıdaki skorTabelasi() fonksiyonunu kullanarak aşağıdakileri yapınız:
@@ -145,10 +161,32 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ]
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
-
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+console.clear()
+function skorTabelasi(periyotSkoru, takimSkoru, ceyrek) {
+  let periyot = {
+    EvSahibi:0,
+    KonukTakim:0
+  }
+  let array =[];
+  for (let i = 1; i <= ceyrek; i++) {
+    let x = periyotSkoru(takimSkoru);
+    periyot.EvSahibi+=x.EvSahibi;
+    periyot.KonukTakim+=x.KonukTakim;
+    array[i-1] = i + '.Periyot: Ev Sahibi: ' + x.EvSahibi+ '- KonukTakim: ' + x.KonukTakim;
+  }
+  if (periyot.EvSahibi===periyot.KonukTakim) {
+    let a = periyotSkoru(takimSkoru);
+    periyot.EvSahibi+=a.EvSahibi;
+    periyot.KonukTakim+=a.KonukTakim;
+    let array1 = '1. Uzatma: Ev Sahibi: ' + a.EvSahibi+ '- KonukTakim: ' + a.KonukTakim;
+    array.push(array1);
+  }
+  let b= 'Mac Sonucu: Ev Sahibi: ' + periyot.EvSahibi+ '- KonukTakim: ' + periyot.KonukTakim;
+  array.push(b);
+  return array
 }
+
+console.log(skorTabelasi(periyotSkoru,takimSkoru,4))
 
 
 
